@@ -28,7 +28,7 @@ class Messenger(object):
 class Status():
     def __init__(self, status_url):
         self.__status_url = status_url
-        self.status_dct = {}
+        self.status_dct = {"Power": 0.0, "CNS Out": 298}
 
     def update(self):
         response = requests.get(self.__status_url, timeout=10)
@@ -72,7 +72,6 @@ def status_loop():
         except requests.exceptions.RequestException:
             # might be a web outage
             updated = False
-            pass
 
         if updated:
             # status update was successful
@@ -84,7 +83,7 @@ def status_loop():
                 reactor_was_at_power = True
 
             if reactor_was_at_power and power < 11:
-                # reactor was above 12 MW, but dipped below 11.
+                # reactor was above 12 MW, but now it's gone below 11.
 
                 # set flag to False so we don't send repeated messages
                 reactor_was_at_power = False
