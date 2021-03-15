@@ -16,12 +16,12 @@ class Messenger(object):
         try:
             r = requests.post(
                 self.__web_hook_url,
-                data=json.dumps(slack_msg),
+                data=json.dumps({"text": slack_msg}),
+                headers={"Content-Type": "application/json"},
                 timeout=10
             )
             return r.status_code == requests.codes.ok
         except requests.exceptions.RequestException:
-            #
             return False
 
 
@@ -95,16 +95,23 @@ def status_loop():
 
                 # set flag to False so we don't send repeated messages
                 reactor_was_at_power = False
-                messenger(f"reactor power fell below 11 MW, ({power})")
+                msg = f"reactor power fell below 11 MW, ({power})"
+                print(msg)
+                messenger(msg)
 
             # TODO fix temperature limits
-            if CNStemp < 28:
+            if CNStemp < 26.5:
                 CNS_was_cold = True
 
             if CNS_was_cold and CNStemp > 30:
                 # set flag to False so we don't send repeated messages
                 CNS_was_cold = False
-                messenger(f"CNS temperature = {CNStemp}")
+                msg = f"CNS temperature = {CNStemp}"
+                print(msg)
+                messenger(msg)
+
+            print(f"{datetime.datetime.now()}")
+            print(status_dct)
 
         time.sleep(60)
 
