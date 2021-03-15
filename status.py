@@ -31,6 +31,14 @@ class Status():
         self.status_dct = {"Power": 0.0, "CNS Out": 298}
 
     def update(self):
+        """
+        Update the Status.status_dct attribute.
+        
+        Returns
+        -------
+        response_code: bool
+            Whether the status update request succeeded.
+        """
         response = requests.get(self.__status_url, timeout=10)
         if response.ok:
             # something like
